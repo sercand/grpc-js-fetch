@@ -8,8 +8,6 @@ script:
 - GOOS=darwin GOARCH=amd64 go build -o bin/protoc-gen-js-fetch-darwin-amd64 -ldflags "-w" github.com/sercand/grpc-js-fetch/protoc-gen-js-fetch
 deploy:
   provider: releases
-  api_key:
-    secure: nDhKys+PmWJX8No8y5t5kkv6s3Roj3lp8lRftlFEFapw8eeD7+ZUSt/iMn9cplVOh6nNG2jnzKkA4jLFpuPCBTiKRhtuYcZdNosSQzZzczt7m7coXqwpUMRQx0PjOgaVTDE731ZjhOzb1auoyyYHHnOuzZ9228yQ/v9d66kS5IM6H3c8Ci+1QXPjt8yP3J/zUn2sXvgfc97dtReT5Yw3qVidLqICE28igWV4jiXj5+vpOQfcvF/R3GXALKOSimMfCaxtpZ7z/DtiB3MKfqxjTKc3UPRXzlwGAZ0UwYah0tX+rmwAi3ls5zK8Fxtj6Y4O4za+wRf/MyPvb4KuwZj7N0oPlFWrEkP1nXg3OHJ9dfyXFpgIjHguzACuvyShZLcUKRPr9cFTf2Vbosrpt+QNvSSvXGYn//5BXypRgGH9N4JmvkYhqa8Gaz4+j6UTj6+RYUG16otEgZbGrPQGacTjBx+VT5Wi4gg0Ll0jtRo/rBo8EOgYta7ASvap8vt0urbxjk6z33yc2nL7w2jvYZ2Pb29N5LiTVCSarYNwpOYjwVN45CLUs+sBwh9mfuu08VUUKGdzvP/wBRqjJdI2WS4ZbCV7jdFlvludTbhKWFhMCH8jK6HbecDvQynkj2wDart0l/K/5FumJVvwiFjVgV2jUVwtmvxrs0BWBaYo2uRypN8=
   file:
   - bin/protoc-gen-js-fetch-linux-amd64
   - bin/protoc-gen-js-fetch-darwin-amd64
@@ -17,5 +15,7 @@ deploy:
   on:
     repo: sercand/grpc-js-fetch
     tags: true
+  api_key:
+    secure: e5fyzsahbvr/B6CAAIovcOcuRvMWwSmjHylBwIuCSFZr3Lu+e0i/8X049mpBP7SgOPd9YON/pr73Y3Qg7s8WB55uIi+WWVMw7DwNFG/dAdaUt2kVWn7ALYDoEs+VeFfQDn5gcLBgIQAJDkiF8SD35RLTGm6WlMNvyCDXoidK+q6l1t9+V7YZ6OBgWChZg0XyZrgOzmPJ0yZEQCj10pXOG0fl5EhUQAzkNPiGcP4MorT1TZuadkzkRFhQ0SxXybVqeRlsZPQod2NXkxW5hT/qI0wdYu874eoSkGPY/QQyHF72WK86M5EK/IBxtnV1CdK+bDoQCqYusU/dLyX0V83LJ/HTcVwt32GhO7vSj7hJXYtk0PkgvujFIdWha68KCqRig/NDrgzM+x5GMOACoHGTg0XsA+7s+7VnQDksA0toQpsXaW/BzfoKujbh+QIBXM39Hjfx1tCBemB1aJfIlMhlN1CkPSBuCBeEyzxzNtedGO6pX3nfw9QIPP7qVXtPLO70a0QTNYB5PI6L7dMhwMKt76ABHcyPbE/OzToLAajg24zZ4QFmW5NYCEYuHI61DPbQdp6lUIip9FD4kJ6M7NBNK3Z5LfVupr21ATisYcSlBeAIKc5JyvFOxMzdmiMS0UzKic1vQJJAzU8KoyMOBu8NTABvse7m3lO26CjfNaeWuZU=
 notifications:
   email: false
