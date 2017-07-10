@@ -1,0 +1,21 @@
+language: go
+sudo: false
+go:
+- '1.8'
+install: true
+script:
+- GOOS=linux GOARCH=amd64 go build -o bin/protoc-gen-js-fetch-linux-amd64 -ldflags "-w" github.com/sercand/grpc-js-fetch/protoc-gen-js-fetch
+- GOOS=darwin GOARCH=amd64 go build -o bin/protoc-gen-js-fetch-darwin-amd64 -ldflags "-w" github.com/sercand/grpc-js-fetch/protoc-gen-js-fetch
+deploy:
+  provider: releases
+  api_key:
+    secure: nDhKys+PmWJX8No8y5t5kkv6s3Roj3lp8lRftlFEFapw8eeD7+ZUSt/iMn9cplVOh6nNG2jnzKkA4jLFpuPCBTiKRhtuYcZdNosSQzZzczt7m7coXqwpUMRQx0PjOgaVTDE731ZjhOzb1auoyyYHHnOuzZ9228yQ/v9d66kS5IM6H3c8Ci+1QXPjt8yP3J/zUn2sXvgfc97dtReT5Yw3qVidLqICE28igWV4jiXj5+vpOQfcvF/R3GXALKOSimMfCaxtpZ7z/DtiB3MKfqxjTKc3UPRXzlwGAZ0UwYah0tX+rmwAi3ls5zK8Fxtj6Y4O4za+wRf/MyPvb4KuwZj7N0oPlFWrEkP1nXg3OHJ9dfyXFpgIjHguzACuvyShZLcUKRPr9cFTf2Vbosrpt+QNvSSvXGYn//5BXypRgGH9N4JmvkYhqa8Gaz4+j6UTj6+RYUG16otEgZbGrPQGacTjBx+VT5Wi4gg0Ll0jtRo/rBo8EOgYta7ASvap8vt0urbxjk6z33yc2nL7w2jvYZ2Pb29N5LiTVCSarYNwpOYjwVN45CLUs+sBwh9mfuu08VUUKGdzvP/wBRqjJdI2WS4ZbCV7jdFlvludTbhKWFhMCH8jK6HbecDvQynkj2wDart0l/K/5FumJVvwiFjVgV2jUVwtmvxrs0BWBaYo2uRypN8=
+  file:
+  - bin/protoc-gen-js-fetch-linux-amd64
+  - bin/protoc-gen-js-fetch-darwin-amd64
+  skip_cleanup: true
+  on:
+    repo: sercand/grpc-js-fetch
+    tags: true
+notifications:
+  email: false
