@@ -21,10 +21,7 @@ import (
 
 var (
 	methodString = `
-  /**
-  * @returns {Promise<{{outType}}>}
-  */
-  async {{funcName}}({{input}}) {
+  async {{funcName}}({{input}}): Promise<{{outType}}> {
 	const _headers = new Headers();
 	_headers.append("Content-Type", "application/json");
 	for (let i = 0; i < this.headerEditors.length; ++i) {
