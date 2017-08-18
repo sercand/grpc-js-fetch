@@ -36,6 +36,10 @@ var (
 	const _req = new Request({{url}}, _init);
 	try {
 	  const resp = await fetch(_req);
+	  if (resp.status !== 200) {
+        const rj = await resp.json();
+        return Promise.reject(rj);
+      }
 	  return resp.json();
 	} catch (err) {
 	  return Promise.reject(err);
