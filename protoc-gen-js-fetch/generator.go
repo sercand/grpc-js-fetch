@@ -7,6 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"path"
+	"reflect"
+	"strconv"
+
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	desc "github.com/golang/protobuf/protoc-gen-go/descriptor"
@@ -14,9 +18,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator"
 	"github.com/valyala/fasttemplate"
-	"path"
-	"reflect"
-	"strconv"
 )
 
 var (
@@ -47,7 +48,7 @@ var (
   }
 
    `
-	tempMethod = fasttemplate.New(methodString, "{{", "}}")
+	tempMethod    = fasttemplate.New(methodString, "{{", "}}")
 	serviceString = `export class {{serviceName}}Service {
     private host:string;
     private headerEditors :any[]= [];
@@ -190,7 +191,7 @@ func (g *generator) printMessageField(w io.Writer, field *desc.FieldDescriptorPr
 			}
 		}
 
-		fasttemplate.New(`  {{fieldName}}: { [key: string]: {{valueType}} };
+		fasttemplate.New(`  {{fieldName}}?: { [key: string]: {{valueType}} };
 		`, "{{", "}}").Execute(w, map[string]interface{}{
 			"fieldName": field.GetJsonName(),
 			"valueType": g.getTypeName(valueField.GetType(), valueField, file),
@@ -200,9 +201,9 @@ func (g *generator) printMessageField(w io.Writer, field *desc.FieldDescriptorPr
 		if strings.Index(tn, "|") > -1 {
 			tn = strings.Replace(tn, "|", "[]|", 1)
 		}
-		fmt.Fprintf(w, "  %s: %s[];\n", field.GetJsonName(), tn)
+		fmt.Fprintf(w, "  %s?: %s[];\n", field.GetJsonName(), tn)
 	} else {
-		fmt.Fprintf(w, "  %s: %s;\n", field.GetJsonName(), g.getTypeName(field.GetType(), field, file))
+		fmt.Fprintf(w, "  %s?: %s;\n", field.GetJsonName(), g.getTypeName(field.GetType(), field, file))
 	}
 }
 
@@ -316,7 +317,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 			prefix = strings.Join(m.Outers, "")
 		}
 		printComment(&buf, protoComments(g.reg, m.File, m.Outers, "MessageType", int32(m.Index)))
-		fmt.Fprintf(&buf, "export class %s {\n", prefix+m.GetName())
+		fmt.Fprintf(&buf, "export interface %s {\n", prefix+m.GetName())
 		for i, f := range m.GetField() {
 			fieldProtoPath := protoPathIndex(reflect.TypeOf((*desc.DescriptorProto)(nil)), "Field")
 			printComment(&buf, protoComments(g.reg, m.File, m.Outers, "MessageType", int32(m.Index), fieldProtoPath, int32(i)))
