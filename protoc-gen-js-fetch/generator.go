@@ -28,13 +28,14 @@ var (
 	for (let i = 0; i < this.headerEditors.length; ++i) {
 	  this.headerEditors[i].edit(_headers);
 	}
+	const _url = new URL({{url}});
 	const _init = {
 	  method: '{{method}}',
 	  headers: _headers,
 	  body: {{body}}
 	} as RequestInit;
 	{{query}}
-	const _req = new Request({{url}}, _init);
+	const _req = new Request(_url.toString(), _init);
 	try {
 	  const resp = await fetch(_req);
 	  if (resp.status !== 200) {
@@ -67,10 +68,11 @@ var (
 	tempService = fasttemplate.New(serviceString, "{{", "}}")
 	queryString = `
 	if([input].[field]){
-		_query.append("[fieldName]", ` + "`${" + `[input].[field]` + "}`" + `)
+		_url.searchParams.append("[fieldName]", ` + "`${" + `[input].[field]` + "}`" + `)
 	}`
-	templateQuery = fasttemplate.New(queryString, "[", "]")
-	templateEnum  = fasttemplate.New("export const {enumType}_{enumName}: {enumType} = \"{enumName}\";\n", "{", "}")
+	templateQuery   = fasttemplate.New(queryString, "[", "]")
+	templateEnum    = fasttemplate.New("export const {enumType}_{enumName}: {enumType} = \"{enumName}\";\n", "{", "}")
+	templateEnumAll = fasttemplate.New("export const ALL_{enumType}_VALUES: {enumType}[] = [{enumNames}];\n", "{", "}")
 )
 
 type packageAlias struct {
@@ -297,13 +299,20 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 			}
 		}
 		fmt.Fprintf(&buf, "%s;\n", en)
+		allStr := []string{}
 		for i, v := range e.GetValue() {
 			printComment(&buf, protoComments(g.reg, e.File, e.Outers, "EnumType", int32(e.Index), valueProtoPath, int32(i)))
 			templateEnum.Execute(&buf, map[string]interface{}{
 				"enumType": enumType,
 				"enumName": v.GetName(),
 			})
+			allStr = append(allStr, fmt.Sprintf("%s_%s", enumType, v.GetName()))
 		}
+		fmt.Fprintln(&buf, "")
+		templateEnumAll.Execute(&buf, map[string]interface{}{
+			"enumType":  enumType,
+			"enumNames": strings.Join(allStr, ","),
+		})
 		fmt.Fprintln(&buf, "")
 	}
 
