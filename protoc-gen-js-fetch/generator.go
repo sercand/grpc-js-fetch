@@ -209,6 +209,11 @@ func (g *generator) printMessageField(w io.Writer, field *desc.FieldDescriptorPr
 	}
 }
 
+func (g *generator) printMessageFieldPath(w io.Writer, prefix string, field *desc.FieldDescriptorProto, file *descriptor.File) {
+	fmt.Fprintf(w, `export const %s_%s = "%s";
+`, prefix, field.GetJsonName(), field.GetName())
+}
+
 func ToJsonName(pre string) string {
 	if len(pre) == 0 {
 		return ""
@@ -255,7 +260,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 `)
 
 	for _, d := range file.GetDependency() {
-		if d == "google/api/annotations.proto" || d == "github.com/gogo/protobuf/gogoproto/gogo.proto" {
+		if d == "google/api/annotations.proto" || d == "github.com/gogo/protobuf/gogoproto/gogo.proto" || d == "gogoproto/gogo.proto" {
 			continue
 		}
 		p := path.Base(d)
@@ -333,6 +338,9 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 			g.printMessageField(&buf, f, file)
 		}
 		fmt.Fprintln(&buf, "}\n")
+		for _, f := range m.GetField() {
+			g.printMessageFieldPath(&buf, prefix+m.GetName(), f, file)
+		}
 	}
 	methProtoPath := protoPathIndex(reflect.TypeOf((*desc.ServiceDescriptorProto)(nil)), "Method")
 	for svcIdx, s := range file.Services {
